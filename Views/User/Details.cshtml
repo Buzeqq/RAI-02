@@ -1,0 +1,30 @@
+@model RAI_02.Models.User?
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@if (Model is null)
+{
+    <p>User not found</p>
+}
+else
+{
+    <h1>User details</h1>
+    <p>Login: @Html.DisplayFor(i => Model.Login)</p>
+    <p>Created at utc: @Html.DisplayFor(i => Model.CreatedAt)</p>
+    <ul>
+        @foreach (var friend in Model.Friends)
+        {
+            <li>@Html.DisplayFor(i => friend.Login)</li>
+        }
+    </ul>
+    
+    @Html.BeginForm("Delete", "User", Model.Login, FormMethod.Post)
+    {
+        <div>
+            <input type="submit" value="Delete" />
+        </div>
+    }
+}

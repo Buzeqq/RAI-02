@@ -1,0 +1,21 @@
+@model RAI_02.Dto.CreateUserDto?
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h1>Add User</h1>
+
+@using (Html.BeginForm("Add", "User", FormMethod.Post))
+{
+    <div>
+        <label for="Login">Login:</label>
+        <input type="text" id="Login" name="Login" value="@Model?.Login" />
+        <span asp-validation-for="Login"></span>
+    </div>
+    
+    <div>
+        <input type="submit" value="Create" />
+    </div>
+}
