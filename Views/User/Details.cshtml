@@ -14,17 +14,11 @@ else
     <h1>User details</h1>
     <p>Login: @Html.DisplayFor(i => Model.Login)</p>
     <p>Created at utc: @Html.DisplayFor(i => Model.CreatedAt)</p>
+    <p>Friends: </p>
     <ul>
-        @foreach (var friend in Model.Friends)
+        @foreach (var friend in Model.Friends.Values)
         {
             <li>@Html.DisplayFor(i => friend.Login)</li>
         }
     </ul>
-    
-    @Html.BeginForm("Delete", "User", Model.Login, FormMethod.Post)
-    {
-        <div>
-            <input type="submit" value="Delete" />
-        </div>
-    }
 }

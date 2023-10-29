@@ -11,7 +11,6 @@ public class SeedUsersService : ISeedUsersService
 {
     public IEnumerable<User> Seed()
     {
-        var admin = new User(Guid.NewGuid(), "Admin");
         var john = new User(Guid.NewGuid(), "John Doe");
         var foo = new User(Guid.NewGuid(), "foo-bar", new []{ john });
         var robert = new User(Guid.NewGuid(), "Robert", new [] {john, foo});
@@ -19,7 +18,6 @@ public class SeedUsersService : ISeedUsersService
         var student = new User(Guid.NewGuid(), "studnet", new []{john, user1, foo});
         var buzeqq = new User(Guid.NewGuid(), "buzeqq", new []{john, foo, robert, user1, student});
         
-        yield return admin;
         yield return john;
         yield return foo;
         yield return robert;

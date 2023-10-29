@@ -11,11 +11,17 @@ public interface IUserRepository
 
     IEnumerable<User> GetAll();
     void Clear();
+    UserValidationResult Validate(IEnumerable<User> users);
 }
+
+public record UserValidationResult(bool Success, IEnumerable<User> validUsers, IEnumerable<User> invalidUsers);
 
 public class UserRepository : IUserRepository
 {
-    private static readonly IDictionary<string, User> Users = new ConcurrentDictionary<string, User>();
+    private static readonly IDictionary<string, User> Users = new ConcurrentDictionary<string, User>(new Dictionary<string, User>
+    {
+        { "admin", new User(Guid.NewGuid(), "admin") }
+    });
 
     
     public void Add(User user)
@@ -42,6 +48,19 @@ public class UserRepository : IUserRepository
 
     public void Clear()
     {
-        Users.Clear();
+        foreach (var (login, _) in Users)
+        {
+            if (login == "admin") continue;
+            Users.Remove(login);
+        }
+    }
+
+    public UserValidationResult Validate(IEnumerable<User> users)
+    {
+        var enumerable = users.ToList();
+        var validUsers = enumerable.Where(u => Users.ContainsKey(u.Login));
+        var invalidUsers = enumerable.Where(u => !Users.ContainsKey(u.Login)).ToList();
+        
+        return new UserValidationResult(invalidUsers.Any(), validUsers, invalidUsers);
     }
 }

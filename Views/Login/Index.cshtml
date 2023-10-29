@@ -1,13 +1,17 @@
 @model RAI_02.Dto.CreateUserDto?
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Login";
     Layout = "_Layout";
+    var userNotFound = ViewData["userNotFound"] as bool? ?? false;
 }
 
-<h1>Add User</h1>
-
-@using (Html.BeginForm("Add", "User", FormMethod.Post))
+<h1>Login</h1>
+@if (userNotFound)
+{
+    <h3 style="color: red">User not found!</h3>
+}
+@using (Html.BeginForm("Login", "Login", FormMethod.Post))
 {
     <div>
         <label for="Login">Login:</label>

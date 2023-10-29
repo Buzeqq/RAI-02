@@ -8,10 +8,15 @@
 <h1>Users</h1>
 <ol>
     @foreach(var user in Model){
-        <li>
-            <a asp-area="" asp-controller="User" asp-action="Details" asp-route-id="@user.Login">
-                @Html.DisplayFor(userItem => user.Login)
-            </a>
+        <li style="display: flex; flex-direction: row">
+            <div style="padding-right: 10px">
+                <a asp-area="" asp-controller="User" asp-action="Details" asp-route-id="@user.Login">
+                                @Html.DisplayFor(userItem => user.Login)
+                            </a>
+            </div>
+            <div>
+                @Html.ActionLink("delete", "Delete", "User", new { user.Login })
+            </div>
         </li>
     }
 </ol>

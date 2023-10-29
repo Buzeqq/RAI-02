@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using RAI_02.Dto;
 using RAI_02.Models;
@@ -20,58 +21,107 @@ public class UserController : Controller
     [HttpGet]
     public IActionResult List()
     {
+        if (!CanAccess(HttpContext))
+        {
+            return RedirectToAction("AccessDenied"); 
+        } 
+        
         return View(_userRepository.GetAll());
     }
 
     [HttpGet]
     public IActionResult Init()
     {
+        if (!CanAccess(HttpContext))
+        {
+            return RedirectToAction("AccessDenied"); 
+        } 
+        
         _userRepository.Clear();
         foreach (var user in _seedUsersService.Seed())
         {
             _userRepository.Add(user);
         }
 
-        return View("List", _userRepository.GetAll());
+        return RedirectToAction("List");
     }
 
     [HttpGet]
     public IActionResult Add()
     {
+        if (!CanAccess(HttpContext))
+        {
+            return RedirectToAction("AccessDenied"); 
+        } 
+        
         return View();
     }
 
     [HttpPost]
     public IActionResult Add(CreateUserDto user)
     {
+        if (!CanAccess(HttpContext))
+        {
+            return RedirectToAction("AccessDenied"); 
+        } 
+        
         var login = user.Login;
         var newUser = new User(Guid.NewGuid(), login);
         
         _userRepository.Add(newUser);
         
-        return View("List", _userRepository.GetAll());
+        return RedirectToAction("List");
     }
 
     [HttpGet]
     [Route("/User/Details/{login}")]
     public IActionResult Details(string login)
     {
+        if (!CanAccess(HttpContext))
+        {
+            return RedirectToAction("AccessDenied"); 
+        } 
+        
         var user = _userRepository.Get(login);
 
         return View(user);
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("/User/Delete/{login}")]
     public IActionResult Delete(string login)
     {
+        if (!CanAccess(HttpContext))
+        {
+            return RedirectToAction("AccessDenied"); 
+        } 
+        
         var user = _userRepository.Get(login);
         if (user is null)
         {
-            return View("List");
+            return RedirectToAction("List");
         }
         
         _userRepository.Delete(user);
-        return View("List");
+        return RedirectToAction("List");
+    }
+
+    private static bool CanAccess(HttpContext ctx)
+    {
+        try
+        {
+            var userSession =
+                JsonSerializer.Deserialize<UserSessionInfomation>(ctx.Session.GetString("session") ?? string.Empty);
+            return userSession?.isAdmin ?? false;
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    public IActionResult AccessDenied()
+    {
+        return View();
     }
 }

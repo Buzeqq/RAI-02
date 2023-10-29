@@ -1,0 +1,60 @@
+@using RAI_02.Repositories
+@model IEnumerable<User>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+    var importResult = ViewData["importResult"] as AddResult;
+    var isBadFormat = ViewData["fileBadFormat"] as bool?;
+    var validationResult = ViewData["validationResult"] as UserValidationResult;
+} 
+
+<h1>Friends</h1>
+<ul>
+    @foreach (var friend in Model)
+    {
+        <li style="display: flex; flex-direction: row">
+            <div style="padding-right: 10px">
+                @friend.Login
+            </div>
+            <div>
+                @Html.ActionLink("Delete", "Delete", "Friends", new { friend.Login });
+            </div>
+        </li>
+    }
+</ul>
+@Html.ActionLink("Add new friend", "Add");
+@Html.ActionLink("Show json", "List");
+@Html.ActionLink("Export to file", "Export");
+@using (Html.BeginForm("Import", "Friends", FormMethod.Post, new { enctype="multipart/form-data" }))
+{
+    <label for="file">Import from file:</label>
+    <input id="file" name="file" type="file" required="required"/>
+    <button type="submit">Import</button>
+}
+
+@if (validationResult is not null)
+{
+    <p>validation result: @validationResult.Success</p>
+    if (!validationResult.Success)
+    {
+        <p>valid friends: @validationResult.validUsers.Count()</p>
+    }
+}
+
+@if (importResult is not null)
+{
+    <p>import result: @importResult.Succes</p>
+    if (!importResult.Succes)
+    {
+        <p>friends added: @importResult.FriendsAdded</p>
+        <p>friends skipped: @importResult.FriendsSkipped</p>
+    }
+}
+
+@if (isBadFormat is true)
+{
+    <p>bad file format!</p>
+}
+
+

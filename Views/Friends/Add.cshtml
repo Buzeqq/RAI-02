@@ -1,13 +1,13 @@
-@model RAI_02.Dto.CreateUserDto?
+@model RAI_02.Dto.AddFriendDto?
 
 @{
     ViewBag.Title = "title";
     Layout = "_Layout";
 }
 
-<h1>Add User</h1>
+<h1>Add new friend</h1>
 
-@using (Html.BeginForm("Add", "User", FormMethod.Post))
+@using (Html.BeginForm("Add", "Friends", FormMethod.Post))
 {
     <div>
         <label for="Login">Login:</label>
@@ -15,6 +15,6 @@
     </div>
     
     <div>
-        <input type="submit" value="Login" />
+        <input type="submit" value="Add" />
     </div>
 }
